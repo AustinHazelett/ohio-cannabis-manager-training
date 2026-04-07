@@ -1,1 +1,1471 @@
-<h1>placeholder</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ohio Cannabis Retail Manager Training</title>
+  <style>
+    :root {
+      --green-dark: #1a3a2a;
+      --green-mid: #2d6a4f;
+      --green-light: #52b788;
+      --green-pale: #d8f3dc;
+      --gold: #d4a017;
+      --gold-light: #f5e6b0;
+      --text-dark: #1b1b1b;
+      --text-muted: #5a6472;
+      --bg: #f8faf9;
+      --white: #ffffff;
+      --red: #c0392b;
+      --red-light: #fdecea;
+      --sidebar-w: 270px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-dark);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    #sidebar {
+      width: var(--sidebar-w);
+      background: var(--green-dark);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      overflow-y: auto;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 24px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+    .sidebar-logo .leaf { font-size: 28px; }
+    .sidebar-logo h2 {
+      font-size: 15px; font-weight: 700; line-height: 1.3;
+      margin-top: 6px; color: var(--green-pale);
+    }
+    .sidebar-logo p {
+      font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px;
+    }
+    .sidebar-progress {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar-progress label {
+      font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+      color: rgba(255,255,255,0.5);
+    }
+    .progress-bar-wrap {
+      background: rgba(255,255,255,0.15);
+      border-radius: 99px; height: 7px; margin-top: 6px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; background: var(--green-light);
+      border-radius: 99px; transition: width .4s ease;
+    }
+    .progress-pct {
+      font-size: 11px; color: var(--green-light); margin-top: 4px;
+      font-weight: 600;
+    }
+    nav { padding: 12px 0; flex: 1; }
+    .nav-section-label {
+      font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); padding: 12px 20px 4px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; cursor: pointer;
+      transition: background .15s; border-left: 3px solid transparent;
+      font-size: 13.5px; color: rgba(255,255,255,0.75);
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .nav-item.active {
+      background: rgba(82,183,136,0.18);
+      border-left-color: var(--green-light);
+      color: #fff; font-weight: 600;
+    }
+    .nav-item .icon { font-size: 16px; min-width: 20px; text-align: center; }
+    .nav-item .badge {
+      margin-left: auto; font-size: 10px; background: var(--green-light);
+      color: var(--green-dark); border-radius: 99px; padding: 1px 7px;
+      font-weight: 700;
+    }
+    .nav-item .check {
+      margin-left: auto; color: var(--green-light); font-size: 14px;
+    }
+
+    /* ── MAIN ── */
+    #main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid #e0e7e3;
+      padding: 14px 36px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar-title { font-size: 13px; color: var(--text-muted); }
+    .topbar-title strong { color: var(--text-dark); font-size: 15px; }
+    .topbar-badge {
+      background: var(--green-pale); color: var(--green-mid);
+      font-size: 11px; padding: 4px 12px; border-radius: 99px; font-weight: 600;
+    }
+    .topbar-badge.warning {
+      background: var(--gold-light); color: #8a6200;
+    }
+
+    /* ── PAGES ── */
+    .page { display: none; padding: 36px; max-width: 900px; }
+    .page.active { display: block; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      border-radius: 16px; color: #fff; padding: 40px 44px; margin-bottom: 32px;
+      position: relative; overflow: hidden;
+    }
+    .hero::after {
+      content: '🌿';
+      position: absolute; right: 40px; top: 50%; transform: translateY(-50%);
+      font-size: 80px; opacity: .15;
+    }
+    .hero h1 { font-size: 26px; font-weight: 800; line-height: 1.25; }
+    .hero p { font-size: 15px; color: rgba(255,255,255,0.8); margin-top: 10px; max-width: 560px; }
+    .hero-meta {
+      display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap;
+    }
+    .hero-meta-item {
+      background: rgba(255,255,255,0.12); border-radius: 8px;
+      padding: 8px 16px; font-size: 13px;
+    }
+    .hero-meta-item strong { display: block; font-size: 11px; opacity: .7; font-weight: 400; }
+
+    /* ── CARD GRID ── */
+    .card-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+      gap: 16px; margin-bottom: 28px;
+    }
+    .card {
+      background: var(--white); border-radius: 12px;
+      border: 1px solid #e3ede7; padding: 20px; cursor: pointer;
+      transition: box-shadow .2s, transform .1s;
+    }
+    .card:hover { box-shadow: 0 4px 18px rgba(0,0,0,.08); transform: translateY(-2px); }
+    .card-icon { font-size: 28px; margin-bottom: 10px; }
+    .card-title { font-size: 14px; font-weight: 700; color: var(--green-dark); }
+    .card-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
+    .card-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      color: var(--green-mid); font-size: 12px; font-weight: 600; margin-top: 12px;
+    }
+
+    /* ── SECTION HEADINGS ── */
+    .page-header { margin-bottom: 28px; }
+    .page-header h2 {
+      font-size: 22px; font-weight: 800; color: var(--green-dark);
+    }
+    .page-header p { font-size: 14px; color: var(--text-muted); margin-top: 6px; }
+    .divider {
+      border: none; border-top: 1px solid #e0e7e3; margin: 28px 0;
+    }
+
+    /* ── ACCORDION ── */
+    .accordion { margin-bottom: 12px; }
+    .accordion-header {
+      background: var(--white); border: 1px solid #e3ede7; border-radius: 10px;
+      padding: 15px 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 14px; font-weight: 600; color: var(--green-dark);
+      transition: background .15s;
+    }
+    .accordion-header:hover { background: var(--green-pale); }
+    .accordion-header .acc-icon { font-size: 18px; margin-right: 10px; }
+    .accordion-header .acc-chevron {
+      font-size: 12px; color: var(--text-muted);
+      transition: transform .2s;
+    }
+    .accordion-header.open { border-radius: 10px 10px 0 0; background: var(--green-pale); }
+    .accordion-header.open .acc-chevron { transform: rotate(180deg); }
+    .accordion-body {
+      display: none; background: var(--white);
+      border: 1px solid #e3ede7; border-top: none;
+      border-radius: 0 0 10px 10px; padding: 18px 20px;
+    }
+    .accordion-body.open { display: block; }
+
+    /* ── ALERT BOXES ── */
+    .alert {
+      border-radius: 10px; padding: 14px 18px; margin: 14px 0;
+      font-size: 13.5px; line-height: 1.6; display: flex; gap: 12px;
+    }
+    .alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .alert.warning { background: var(--gold-light); border-left: 4px solid var(--gold); }
+    .alert.danger  { background: var(--red-light);  border-left: 4px solid var(--red);  }
+    .alert.success { background: var(--green-pale); border-left: 4px solid var(--green-mid); }
+    .alert.info    { background: #eef4ff;            border-left: 4px solid #3b82f6; }
+    .alert strong  { display: block; font-weight: 700; margin-bottom: 2px; }
+
+    /* ── DATA TABLE ── */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+    .data-table th {
+      background: var(--green-dark); color: #fff;
+      padding: 10px 14px; text-align: left; font-size: 12px; letter-spacing: .04em;
+    }
+    .data-table th:first-child { border-radius: 8px 0 0 0; }
+    .data-table th:last-child  { border-radius: 0 8px 0 0; }
+    .data-table td { padding: 10px 14px; border-bottom: 1px solid #e3ede7; }
+    .data-table tr:nth-child(even) td { background: #f6fbf8; }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* ── CHECKLIST ── */
+    .checklist { list-style: none; }
+    .checklist li {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid #edf2ef; font-size: 13.5px;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist input[type=checkbox] {
+      width: 17px; height: 17px; accent-color: var(--green-mid);
+      cursor: pointer; flex-shrink: 0; margin-top: 2px;
+    }
+    .checklist label { cursor: pointer; line-height: 1.55; }
+    .checklist input:checked + label { text-decoration: line-through; color: var(--text-muted); }
+
+    /* ── STEP LIST ── */
+    .step-list { counter-reset: step; list-style: none; margin: 12px 0; }
+    .step-list li {
+      counter-increment: step;
+      display: flex; gap: 14px; padding: 10px 0;
+      border-bottom: 1px solid #edf2ef; font-size: 13.5px; align-items: flex-start;
+    }
+    .step-list li:last-child { border-bottom: none; }
+    .step-list li::before {
+      content: counter(step);
+      background: var(--green-mid); color: #fff;
+      border-radius: 50%; min-width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* ── TAG PILLS ── */
+    .tag {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      padding: 2px 9px; border-radius: 99px; margin: 2px;
+    }
+    .tag.green  { background: var(--green-pale); color: var(--green-mid); }
+    .tag.gold   { background: var(--gold-light); color: #7a5500; }
+    .tag.red    { background: var(--red-light);  color: var(--red);  }
+    .tag.blue   { background: #eef4ff;            color: #2563eb; }
+
+    /* ── TWO-COL ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 14px 0; }
+    @media (max-width: 620px) { .two-col { grid-template-columns: 1fr; } }
+    .info-box {
+      background: var(--white); border: 1px solid #e3ede7;
+      border-radius: 10px; padding: 16px;
+    }
+    .info-box h4 { font-size: 13px; font-weight: 700; color: var(--green-dark); margin-bottom: 8px; }
+    .info-box ul { list-style: none; }
+    .info-box ul li {
+      font-size: 13px; padding: 5px 0; border-bottom: 1px solid #edf2ef;
+      display: flex; gap: 8px; align-items: flex-start; line-height: 1.5;
+    }
+    .info-box ul li:last-child { border-bottom: none; }
+    .info-box ul li::before { content: '→'; color: var(--green-light); font-weight: 700; flex-shrink: 0; }
+
+    /* ── QUIZ ── */
+    .quiz-card {
+      background: var(--white); border: 1px solid #e3ede7;
+      border-radius: 12px; padding: 22px; margin-bottom: 16px;
+    }
+    .quiz-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 14px; }
+    .quiz-options label {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: 8px; cursor: pointer;
+      font-size: 13.5px; margin: 4px 0;
+      border: 1px solid #e3ede7; transition: background .15s;
+    }
+    .quiz-options label:hover { background: var(--green-pale); }
+    .quiz-options input[type=radio] { accent-color: var(--green-mid); }
+    .quiz-result {
+      margin-top: 12px; font-size: 13px; font-weight: 600; padding: 10px 14px;
+      border-radius: 8px; display: none;
+    }
+    .quiz-result.correct { background: var(--green-pale); color: var(--green-mid); }
+    .quiz-result.incorrect { background: var(--red-light); color: var(--red); }
+    .quiz-btn {
+      background: var(--green-mid); color: #fff; border: none;
+      padding: 9px 20px; border-radius: 8px; cursor: pointer;
+      font-size: 13px; font-weight: 600; margin-top: 10px;
+      transition: background .2s;
+    }
+    .quiz-btn:hover { background: var(--green-dark); }
+    .quiz-score-display {
+      background: var(--green-pale); border-radius: 10px; padding: 16px;
+      text-align: center; font-size: 14px; color: var(--green-dark);
+      font-weight: 600; margin-top: 16px; display: none;
+    }
+
+    /* ── NAV BUTTONS ── */
+    .page-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 36px; padding-top: 20px; border-top: 1px solid #e0e7e3;
+    }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--green-mid); color: #fff;
+      border: none; padding: 10px 22px; border-radius: 8px;
+      font-size: 13.5px; font-weight: 600; cursor: pointer;
+      transition: background .2s;
+    }
+    .nav-btn:hover { background: var(--green-dark); }
+    .nav-btn.secondary {
+      background: var(--white); color: var(--green-mid);
+      border: 1px solid var(--green-mid);
+    }
+    .nav-btn.secondary:hover { background: var(--green-pale); }
+    .nav-btn:disabled { opacity: .4; cursor: default; }
+
+    /* ── MODULE BADGE ── */
+    .module-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--green-pale); color: var(--green-mid);
+      border-radius: 6px; padding: 4px 12px; font-size: 12px; font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    /* ── MISC ── */
+    .text-sm { font-size: 13px; line-height: 1.65; color: var(--text-dark); }
+    .text-sm p { margin-bottom: 10px; }
+    .highlight { background: var(--gold-light); border-radius: 4px; padding: 0 4px; }
+    .mt-16 { margin-top: 16px; }
+    .mb-16 { margin-bottom: 16px; }
+    .updated-badge {
+      font-size: 11px; background: var(--gold-light); color: #7a5500;
+      border-radius: 4px; padding: 2px 7px; font-weight: 600; margin-left: 8px;
+    }
+
+    /* Scrollbar */
+    #sidebar::-webkit-scrollbar { width: 5px; }
+    #sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 99px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ SIDEBAR ═══ -->
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <div class="leaf">🌿</div>
+    <h2>Ohio Cannabis<br>Manager Training</h2>
+    <p>DCC Compliant · Updated March 2026</p>
+  </div>
+  <div class="sidebar-progress">
+    <label>Your Progress</label>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="progress-pct" id="progressPct">0% complete</div>
+  </div>
+  <nav>
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" onclick="showPage('home')">
+      <span class="icon">🏠</span> Welcome &amp; Overview
+    </div>
+    <div class="nav-section-label">Modules</div>
+    <div class="nav-item" onclick="showPage('mod1')">
+      <span class="icon">📋</span> 1 · DCC Compliance
+      <span class="badge">Core</span>
+    </div>
+    <div class="nav-item" onclick="showPage('mod2')">
+      <span class="icon">🔗</span> 2 · Metrc Tracking
+      <span class="badge">Core</span>
+    </div>
+    <div class="nav-item" onclick="showPage('mod3')">
+      <span class="icon">🛒</span> 3 · Customer Experience
+    </div>
+    <div class="nav-item" onclick="showPage('mod4')">
+      <span class="icon">📦</span> 4 · SOPs &amp; Operations
+    </div>
+    <div class="nav-section-label">Assessment</div>
+    <div class="nav-item" onclick="showPage('quiz')">
+      <span class="icon">✅</span> Knowledge Check
+    </div>
+    <div class="nav-section-label">Reference</div>
+    <div class="nav-item" onclick="showPage('checklist')">
+      <span class="icon">🗂️</span> Daily Checklist
+    </div>
+    <div class="nav-item" onclick="showPage('resources')">
+      <span class="icon">🔗</span> DCC Resources
+    </div>
+  </nav>
+</aside>
+
+<!-- ═══════════════════════════════════════════ MAIN ═══════ -->
+<div id="main">
+  <div class="topbar">
+    <div class="topbar-title">
+      <strong id="topbarTitle">Welcome &amp; Overview</strong>
+    </div>
+    <span class="topbar-badge warning">⚠ SB 56 in Effect: March 20, 2026</span>
+  </div>
+
+  <!-- ── HOME ── -->
+  <section class="page active" id="page-home">
+    <div class="hero">
+      <h1>Ohio Cannabis Retail<br>Manager Training Program</h1>
+      <p>Your complete guide to running a compliant, efficient, and customer-focused dispensary under Ohio Division of Cannabis Control (DCC) regulations.</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item"><strong>Audience</strong>New &amp; Experienced Managers</div>
+        <div class="hero-meta-item"><strong>Modules</strong>4 Core + Assessment</div>
+        <div class="hero-meta-item"><strong>Regulation</strong>Ohio DCC / SB 56 (2026)</div>
+        <div class="hero-meta-item"><strong>Tracking System</strong>Metrc</div>
+      </div>
+    </div>
+
+    <div class="alert warning">
+      <span class="alert-icon">⚠️</span>
+      <div><strong>SB 56 Now in Effect (March 20, 2026)</strong>
+        Governor DeWine signed Senate Bill 56 on December 19, 2025. This major overhaul of Ohio's cannabis regulatory framework took effect March 20, 2026. All managers must be familiar with the updated rules covered in this training.</div>
+    </div>
+
+    <div class="page-header mt-16">
+      <h2>Training Modules</h2>
+      <p>Complete all four modules and the knowledge check. Use the sidebar to navigate at any time.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card" onclick="showPage('mod1')">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Module 1 — DCC Compliance</div>
+        <div class="card-desc">Ohio regulations, purchase limits, ID verification, licensing, and SB 56 updates.</div>
+        <div class="card-link">Start Module →</div>
+      </div>
+      <div class="card" onclick="showPage('mod2')">
+        <div class="card-icon">🔗</div>
+        <div class="card-title">Module 2 — Metrc Tracking</div>
+        <div class="card-desc">Seed-to-sale tracking, package adjustments, inventory reconciliation, and DCC reporting.</div>
+        <div class="card-link">Start Module →</div>
+      </div>
+      <div class="card" onclick="showPage('mod3')">
+        <div class="card-icon">🛒</div>
+        <div class="card-title">Module 3 — Customer Experience</div>
+        <div class="card-desc">Adult-use vs. medical, sales floor best practices, product education, and ID checks.</div>
+        <div class="card-link">Start Module →</div>
+      </div>
+      <div class="card" onclick="showPage('mod4')">
+        <div class="card-icon">📦</div>
+        <div class="card-title">Module 4 — SOPs &amp; Operations</div>
+        <div class="card-desc">Opening/closing procedures, cash handling, record keeping, and incident reporting.</div>
+        <div class="card-link">Start Module →</div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="page-header">
+      <h2>Key Numbers to Know</h2>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Regulation Area</th><th>Limit / Requirement</th><th>Customer Type</th></tr></thead>
+      <tbody>
+        <tr><td>Flower Purchase Limit (daily)</td><td>2.5 oz (70.75g)</td><td>Adult-Use &amp; Medical</td></tr>
+        <tr><td>Processed THC Limit (daily)</td><td>15,000 mg total THC</td><td>Adult-Use</td></tr>
+        <tr><td>Edible Package Limit</td><td>110 mg THC max / 10 mg per serving</td><td>Adult-Use</td></tr>
+        <tr><td>Edible Package Limit (Medical)</td><td>1,500 mg / 55 mg per serving</td><td>Medical Patients</td></tr>
+        <tr><td>Medical Purchase Limit (daily)</td><td>Up to 10 oz (with card, some limitations)</td><td>Medical Patients</td></tr>
+        <tr><td>Minimum Purchase Age</td><td>21+ (adult-use) · 18+ (medical)</td><td>All</td></tr>
+        <tr><td>Excise Tax</td><td>10% (waived for medical cardholders)</td><td>Adult-Use only</td></tr>
+        <tr><td>Dispensary Cap (statewide)</td><td>400 total licenses</td><td>N/A</td></tr>
+        <tr><td>Record Retention</td><td>Minimum 3 years</td><td>N/A</td></tr>
+        <tr><td>Weekly Inventory Audit</td><td>At minimum once per week</td><td>N/A</td></tr>
+      </tbody>
+    </table>
+
+    <div class="page-nav">
+      <span></span>
+      <button class="nav-btn" onclick="showPage('mod1')">Begin Module 1 →</button>
+    </div>
+  </section>
+
+  <!-- ── MODULE 1 — DCC COMPLIANCE ── -->
+  <section class="page" id="page-mod1">
+    <div class="module-badge">📋 Module 1 of 4</div>
+    <div class="page-header">
+      <h2>DCC Compliance &amp; Ohio Regulations</h2>
+      <p>Master the regulatory framework that governs every aspect of your dispensary's operation.</p>
+    </div>
+
+    <div class="alert info">
+      <span class="alert-icon">ℹ️</span>
+      <div><strong>Regulatory Authority</strong>
+        The Ohio Division of Cannabis Control (DCC), housed within the Ohio Department of Commerce, is the single regulatory authority for both medical and adult-use cannabis in Ohio — handling all licensing, compliance enforcement, and rulemaking.</div>
+    </div>
+
+    <!-- Accordion: SB 56 -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">⚖️</span> Senate Bill 56 — What Changed in 2026</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="tag gold">Effective March 20, 2026</div>
+        <p class="text-sm mt-16">Ohio SB 56, signed December 19, 2025, represents the most significant overhaul of Ohio's cannabis regulatory framework since legalization. Key changes managers must know:</p>
+        <ul class="step-list mt-16">
+          <li><strong>Statewide dispensary cap set at 400 licenses.</strong> No new licenses can be issued beyond this total.</li>
+          <li><strong>Single ownership cap.</strong> Individual owners may hold no more than 8 dispensary licenses, 1 cultivator license, and 1 processor license.</li>
+          <li><strong>DCC becomes sole authority.</strong> The DCC now handles both medical and adult-use regulation under one unified framework.</li>
+          <li><strong>Updated purchase limits.</strong> Medical daily limits were revised effective March 24, 2026 (see purchase limits section).</li>
+          <li><strong>Source restriction upheld.</strong> Dispensaries may only sell marijuana obtained from a DCC-licensed cultivator or processor.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Accordion: Purchase Limits -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">🛍️</span> Purchase Limits — Adult-Use vs. Medical</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="two-col">
+          <div class="info-box">
+            <h4>🧑 Adult-Use (Recreational) — 21+</h4>
+            <ul>
+              <li>2.5 oz (70.75g) flower per day <span class="tag green">Updated June 2025</span></li>
+              <li>15,000 mg total THC in processed forms per day</li>
+              <li>Edibles: max 110 mg THC per package</li>
+              <li>Max 10 mg THC per individual serving</li>
+              <li>Subject to 10% excise tax</li>
+            </ul>
+          </div>
+          <div class="info-box">
+            <h4>🏥 Medical Patients — 18+</h4>
+            <ul>
+              <li>Up to 10 oz/day (with some limitations) <span class="tag gold">Updated March 2026</span></li>
+              <li>Up to 2.5 oz/day with no limitations</li>
+              <li>Edibles: up to 1,500 mg / 55 mg per serving</li>
+              <li>High-dose edibles reserved for medical patients only</li>
+              <li>Exempt from 10% excise tax</li>
+            </ul>
+          </div>
+        </div>
+        <div class="alert danger mt-16">
+          <span class="alert-icon">🚫</span>
+          <div><strong>High-Dose Edibles — Medical Only</strong>
+            As of 2025 rule updates, adult-use consumers no longer have access to high-dose THC edibles. Products exceeding 110 mg per package are RESTRICTED to medical cardholders only. Selling high-dose edibles to adult-use customers is a compliance violation.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion: ID Verification -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">🪪</span> ID Verification Requirements</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <p class="text-sm">ID verification is your first line of compliance defense. Every sale must begin with a proper ID check.</p>
+        <ul class="step-list mt-16">
+          <li>Check a valid, government-issued photo ID for <strong>every customer, every visit</strong> — no exceptions for regulars.</li>
+          <li>Adult-use: customer must be <strong>21 or older</strong>. Medical: patient must be <strong>18 or older</strong> with an active Ohio MMJ card.</li>
+          <li>Acceptable IDs: state driver's license, state ID, US passport, military ID. All must be unexpired.</li>
+          <li>Verify the medical patient's Ohio MMJ card is active and not expired before any medical sale.</li>
+          <li>Document refusals — if a customer cannot provide valid ID, refuse the sale and log the attempt.</li>
+          <li>Use your POS system's ID scanning feature to record age verification and flag expired documents.</li>
+        </ul>
+        <div class="alert warning mt-16">
+          <span class="alert-icon">⚠️</span>
+          <div><strong>Training Your Staff</strong>
+            All budtenders must be trained on ID verification procedures. As manager, you are responsible for ensuring every team member can identify valid vs. invalid IDs, recognize altered documents, and handle confrontational situations appropriately.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion: Licensing -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">📄</span> Licensing, Fees &amp; Background Checks</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <table class="data-table">
+          <thead><tr><th>Item</th><th>Amount / Requirement</th></tr></thead>
+          <tbody>
+            <tr><td>Application Fee</td><td>$5,000</td></tr>
+            <tr><td>License Fee</td><td>$80,000</td></tr>
+            <tr><td>Annual Renewal Fee</td><td>$80,000</td></tr>
+            <tr><td>Background Checks</td><td>Required for all owners, officers, and board members</td></tr>
+            <tr><td>Pre-License Facility Inspection</td><td>Required — facility inspected for compliance before license is issued</td></tr>
+            <tr><td>Source Restriction</td><td>Must purchase only from DCC-licensed cultivators and processors</td></tr>
+          </tbody>
+        </table>
+        <div class="alert success mt-16">
+          <span class="alert-icon">✅</span>
+          <div><strong>Manager Tip</strong>
+            Keep a copy of your current dispensary license posted in a visible location. The DCC may conduct unannounced inspections. License renewal deadlines should be calendared 60 days in advance.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion: Compliance Violations -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">⚠️</span> Common Compliance Violations to Avoid</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <table class="data-table">
+          <thead><tr><th>Violation</th><th>Risk Level</th><th>Prevention</th></tr></thead>
+          <tbody>
+            <tr><td>Selling to underage customers</td><td><span class="tag red">Critical</span></td><td>Scan ID every transaction</td></tr>
+            <tr><td>Exceeding daily purchase limits</td><td><span class="tag red">Critical</span></td><td>POS limit flags + Metrc tracking</td></tr>
+            <tr><td>Selling high-dose edibles to adult-use customers</td><td><span class="tag red">Critical</span></td><td>Separate medical/adult inventory; POS flags</td></tr>
+            <tr><td>Inaccurate Metrc records</td><td><span class="tag gold">High</span></td><td>Real-time Metrc updates; weekly audits</td></tr>
+            <tr><td>Purchasing from unlicensed sources</td><td><span class="tag red">Critical</span></td><td>Verify DCC license before every vendor order</td></tr>
+            <tr><td>Failure to report inventory loss</td><td><span class="tag gold">High</span></td><td>Log discrepancies immediately; 2-day reporting</td></tr>
+            <tr><td>Inadequate record retention</td><td><span class="tag gold">High</span></td><td>3-year minimum; daily electronic backup</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="page-nav">
+      <button class="nav-btn secondary" onclick="showPage('home')">← Overview</button>
+      <button class="nav-btn" onclick="markComplete('mod1'); showPage('mod2')">Complete &amp; Continue →</button>
+    </div>
+  </section>
+
+  <!-- ── MODULE 2 — METRC ── -->
+  <section class="page" id="page-mod2">
+    <div class="module-badge">🔗 Module 2 of 4</div>
+    <div class="page-header">
+      <h2>Metrc / Seed-to-Sale Tracking</h2>
+      <p>Ohio's official statewide track-and-trace system — every gram must be accounted for in real time.</p>
+    </div>
+
+    <div class="alert success">
+      <span class="alert-icon">ℹ️</span>
+      <div><strong>What is Metrc?</strong>
+        Metrc is Ohio's mandatory seed-to-sale tracking system, in use since 2018. It tracks all cannabis as it moves from cultivators through processors to dispensaries and finally to customers. The DCC monitors your Metrc data in real time.</div>
+    </div>
+
+    <!-- Accordion: Core Metrc Concepts -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">🌱</span> Core Metrc Concepts for Dispensary Managers</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="two-col">
+          <div class="info-box">
+            <h4>Key Metrc Objects</h4>
+            <ul>
+              <li><strong>Packages</strong> — Tagged units of cannabis with a unique Metrc ID (RFID tag)</li>
+              <li><strong>Transfers</strong> — Recorded movement of packages between licensees</li>
+              <li><strong>Adjustments</strong> — Corrections to package quantities with approved reasons</li>
+              <li><strong>Sales</strong> — Each retail transaction recorded in Metrc via your POS</li>
+              <li><strong>Plants</strong> — Not applicable at retail; cultivator-level tracking</li>
+            </ul>
+          </div>
+          <div class="info-box">
+            <h4>Manager Responsibilities</h4>
+            <ul>
+              <li>Ensure all incoming inventory is received and accepted in Metrc on arrival</li>
+              <li>Ensure POS syncs sales data to Metrc in real time or per session</li>
+              <li>Review Metrc inventory vs. physical count in weekly audits</li>
+              <li>Authorize and document all package adjustments</li>
+              <li>Ensure Metrc data is current before any DCC inspection</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion: Receiving Inventory -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">📥</span> Receiving Inventory — Step-by-Step</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <ul class="step-list">
+          <li>Verify that the incoming transfer manifest is active and visible in your Metrc account before accepting any product.</li>
+          <li>Physically count and inspect all packages. Check that Metrc RFID tags are intact and match the manifest quantities.</li>
+          <li>Verify the vendor holds a current, valid DCC license — confirm via the DCC's online licensee search if unfamiliar.</li>
+          <li>Accept the transfer in Metrc promptly. Do not leave transfers in "In Transit" status. The DCC monitors outstanding transfers.</li>
+          <li>Flag and document any discrepancies (wrong quantities, damaged products, missing tags) before accepting.</li>
+          <li>Move received packages into appropriate inventory locations in Metrc (e.g., vault/sales floor) and your POS system.</li>
+          <li>Retain the transfer manifest (physical or electronic) as part of your 3-year record-keeping obligation.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Accordion: Package Adjustments -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">🔧</span> Package Adjustments — October 2025 Guidance</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="tag gold">Updated: October 22, 2025</div>
+        <p class="text-sm mt-16">The DCC issued updated guidance on package adjustments in October 2025. Adjustments must be made promptly to keep Metrc accurate. The DCC actively monitors adjustment patterns.</p>
+        <div class="alert danger mt-16">
+          <span class="alert-icon">🚫</span>
+          <div><strong>Misuse Consequences</strong>
+            Using a Metrc Package Adjustment inappropriately or outside permitted reasons may result in: retesting requirements, administrative hold on product, destruction of product, or further enforcement action by the DCC.</div>
+        </div>
+        <table class="data-table mt-16">
+          <thead><tr><th>Adjustment Reason</th><th>When to Use</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Moisture Loss / Evaporation</td><td>Weight discrepancy on flower over time</td><td>Must be documented; reasonable amount only</td></tr>
+            <tr><td>Dispensing Error</td><td>Incorrect amount dispensed to customer</td><td>Manager must review monthly per DCC rules</td></tr>
+            <tr><td>Scale Calibration Variance</td><td>Small measurement differences</td><td>Calibrate scales regularly; log calibration dates</td></tr>
+            <tr><td>Waste / Destruction</td><td>Product spoilage or quality failures</td><td>Destruction must follow DCC destruction procedures</td></tr>
+            <tr><td>Theft / Loss</td><td>Unexplained inventory shortage</td><td>Must report to DCC within 2 business days</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Accordion: Sales & POS Integration -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">🖥️</span> POS Integration &amp; Sales Recording</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <p class="text-sm">Your Point of Sale (POS) system should integrate directly with Metrc. Understanding how this works prevents compliance gaps.</p>
+        <ul class="step-list mt-16">
+          <li>Configure your POS to sync sales to Metrc automatically at time of sale or end of business day (real-time preferred).</li>
+          <li>Each sale must include: customer ID verification confirmation, items sold with Metrc package IDs, quantities, and sale totals.</li>
+          <li>POS must enforce daily purchase limits — the system should prevent overselling to a single customer.</li>
+          <li>Ensure your Metrc API key is current. Expired API keys break the POS-Metrc connection — check monthly.</li>
+          <li>Reconcile POS records against Metrc at end of each business day to catch any sync failures immediately.</li>
+          <li>Maintain POS transaction records as backup documentation alongside Metrc data.</li>
+        </ul>
+        <div class="alert success mt-16">
+          <span class="alert-icon">✅</span>
+          <div><strong>Best Practice</strong>
+            Designate a "Metrc Lead" on each shift — a staff member responsible for monitoring the Metrc dashboard for any red flags (pending transfers, sync errors) throughout the day.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion: Inventory Reconciliation -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">📊</span> Inventory Reconciliation &amp; Audits</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <p class="text-sm">Ohio rules require dispensaries to conduct and document a formal inventory audit <strong>at least once weekly</strong>, with an annual audit compiled by a CPA or auditor.</p>
+        <ul class="step-list mt-16">
+          <li>Count all physical cannabis products on hand — flower, concentrates, edibles, topicals, tinctures, accessories.</li>
+          <li>Compare physical counts to Metrc package balances. Document any discrepancies with explanations.</li>
+          <li>Investigate discrepancies promptly. Determine whether the cause is a Metrc error, POS sync issue, or actual product loss.</li>
+          <li>Make approved Metrc adjustments for explainable discrepancies. Unexplained losses require DCC notification within 2 business days.</li>
+          <li>Document the audit results: date, auditor name, findings, and corrective actions taken. Retain for 3+ years.</li>
+          <li>For the annual audit, engage a licensed CPA or auditor to compile and certify the annual inventory report.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="page-nav">
+      <button class="nav-btn secondary" onclick="showPage('mod1')">← Module 1</button>
+      <button class="nav-btn" onclick="markComplete('mod2'); showPage('mod3')">Complete &amp; Continue →</button>
+    </div>
+  </section>
+
+  <!-- ── MODULE 3 — CUSTOMER EXPERIENCE ── -->
+  <section class="page" id="page-mod3">
+    <div class="module-badge">🛒 Module 3 of 4</div>
+    <div class="page-header">
+      <h2>Customer &amp; Patient Experience</h2>
+      <p>Deliver a compliant, professional, and welcoming experience for both adult-use customers and medical patients.</p>
+    </div>
+
+    <!-- Accordion: Adult vs Medical -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">🔄</span> Adult-Use vs. Medical — Key Differences</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <table class="data-table">
+          <thead><tr><th>Factor</th><th>Adult-Use (Recreational)</th><th>Medical Patient</th></tr></thead>
+          <tbody>
+            <tr><td>Minimum Age</td><td>21+</td><td>18+ (with valid MMJ card)</td></tr>
+            <tr><td>ID Required</td><td>Government-issued photo ID</td><td>Govt. ID + active Ohio MMJ card</td></tr>
+            <tr><td>Daily Purchase Limit (flower)</td><td>2.5 oz</td><td>Up to 10 oz (with limitations)</td></tr>
+            <tr><td>Edibles — Max Package</td><td>110 mg THC</td><td>1,500 mg THC</td></tr>
+            <tr><td>Max Serving Size (edibles)</td><td>10 mg THC</td><td>55 mg THC</td></tr>
+            <tr><td>Excise Tax (10%)</td><td>Yes — applied</td><td>No — waived</td></tr>
+            <tr><td>High-Dose Products</td><td>Not available</td><td>Available</td></tr>
+          </tbody>
+        </table>
+        <div class="alert warning mt-16">
+          <span class="alert-icon">⚠️</span>
+          <div><strong>Product Segregation</strong>
+            Medical-only products (high-dose edibles, higher-limit inventory) must be clearly labeled and separated from adult-use inventory on your sales floor. Budtenders must understand which products are available to which customer types.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion: Sales Floor Best Practices -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">🌟</span> Sales Floor Best Practices</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="two-col">
+          <div class="info-box">
+            <h4>Before the Sale</h4>
+            <ul>
+              <li>Greet every customer professionally and promptly</li>
+              <li>Check ID at the entry point and again at the register</li>
+              <li>Confirm medical card validity (for medical patients)</li>
+              <li>Ask about the customer's needs/goals before recommending products</li>
+            </ul>
+          </div>
+          <div class="info-box">
+            <h4>During the Sale</h4>
+            <ul>
+              <li>Educate customers on products objectively — avoid health claims</li>
+              <li>Use POS to verify customer hasn't hit daily limits</li>
+              <li>Confirm correct product tier (medical vs. adult-use)</li>
+              <li>Review the transaction total with customer before checkout</li>
+            </ul>
+          </div>
+        </div>
+        <div class="alert danger mt-16">
+          <span class="alert-icon">🚫</span>
+          <div><strong>Prohibited Sales Practices</strong>
+            Staff may NOT make medical claims about cannabis products. Do not tell customers that cannabis will "treat," "cure," or "diagnose" any condition. Stick to product attributes (terpenes, potency, effects profiles) and encourage customers to consult healthcare providers for medical advice.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion: Product Education -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">📚</span> Product Education for Your Team</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <p class="text-sm">Well-educated budtenders build customer trust and reduce compliance risk. Managers should conduct regular product training sessions.</p>
+        <div class="two-col mt-16">
+          <div class="info-box">
+            <h4>Product Categories to Know</h4>
+            <ul>
+              <li><strong>Flower</strong> — Indica, Sativa, Hybrid; cannabinoid and terpene profiles</li>
+              <li><strong>Concentrates</strong> — Wax, shatter, live resin, distillate; methods of consumption</li>
+              <li><strong>Edibles</strong> — Onset times, dosing guidance, medical vs. adult-use limits</li>
+              <li><strong>Tinctures / Capsules</strong> — Sublingual vs. ingested absorption</li>
+              <li><strong>Topicals</strong> — Non-intoxicating; local vs. transdermal</li>
+              <li><strong>Vapes / Cartridges</strong> — Hardware types; battery compatibility</li>
+            </ul>
+          </div>
+          <div class="info-box">
+            <h4>Budtender Training Topics</h4>
+            <ul>
+              <li>THC vs. CBD vs. CBN vs. CBG — effects and use cases</li>
+              <li>Terpene education (myrcene, limonene, pinene, etc.)</li>
+              <li>Onset times by consumption method</li>
+              <li>New customer dosing guidance — "start low, go slow"</li>
+              <li>Contraindications to mention (consult doctor if on medications)</li>
+              <li>Ohio's labeling requirements and how to read a product label</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion: Difficult Situations -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">🛡️</span> Handling Difficult Situations</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <table class="data-table">
+          <thead><tr><th>Situation</th><th>Correct Response</th></tr></thead>
+          <tbody>
+            <tr><td>Customer appears intoxicated</td><td>Decline the sale. Never sell to visibly impaired customers. Document the refusal.</td></tr>
+            <tr><td>Suspected fake/altered ID</td><td>Decline the sale. Do not confiscate the ID (not authorized). Document and report to manager.</td></tr>
+            <tr><td>Customer attempts to purchase over their daily limit</td><td>The POS/Metrc system should flag this. Explain the limit and decline the excess portion.</td></tr>
+            <tr><td>Minor attempts to purchase</td><td>Immediate refusal. Notify manager. Document the incident. Consider calling law enforcement if situation escalates.</td></tr>
+            <tr><td>Customer becomes aggressive</td><td>De-escalate calmly. Involve manager. Use security if needed. Document incident. Never argue about regulations.</td></tr>
+            <tr><td>Customer requests a refund</td><td>Review your dispensary's refund SOP. Note: cannabis products sold cannot generally be returned per DCC rules — exchanges may be possible for defective products.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Accordion: Budtender Management -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">👥</span> Managing Your Budtender Team</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <ul class="step-list">
+          <li>Ensure all budtenders complete initial DCC compliance orientation before their first customer interaction.</li>
+          <li>Conduct regular refresher trainings — at minimum quarterly — covering regulation updates, product knowledge, and customer service.</li>
+          <li>Implement a "mystery shop" or observed sale program quarterly to assess compliance adherence on the floor.</li>
+          <li>Maintain documentation of all staff training — dates, topics covered, and employee signatures. The DCC may request this during inspections.</li>
+          <li>Establish clear escalation procedures — staff must know when to call you (the manager) vs. handle independently.</li>
+          <li>Review the quality assurance log monthly — per DCC rules, the Responsible Party must review all dispensing errors at least once per calendar month.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="page-nav">
+      <button class="nav-btn secondary" onclick="showPage('mod2')">← Module 2</button>
+      <button class="nav-btn" onclick="markComplete('mod3'); showPage('mod4')">Complete &amp; Continue →</button>
+    </div>
+  </section>
+
+  <!-- ── MODULE 4 — SOPs ── -->
+  <section class="page" id="page-mod4">
+    <div class="module-badge">📦 Module 4 of 4</div>
+    <div class="page-header">
+      <h2>SOPs &amp; Daily Operations</h2>
+      <p>Standardized procedures keep your dispensary running smoothly, your team aligned, and your compliance airtight.</p>
+    </div>
+
+    <!-- Accordion: Opening -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">☀️</span> Opening Procedures</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <ul class="step-list">
+          <li>Disarm security system. Check overnight security camera logs for any alerts or incidents.</li>
+          <li>Count the opening cash drawer and verify it matches the prior closing count. Document any discrepancies.</li>
+          <li>Power on POS terminals and verify Metrc sync is active and connected. Check for any pending transfers in Metrc.</li>
+          <li>Complete the opening physical inventory spot-check — verify a sample of high-value items match Metrc balances.</li>
+          <li>Check product expiration dates and remove any expired or compromised products from the sales floor.</li>
+          <li>Confirm all required licenses and postings are visibly displayed (dispensary license, required DCC postings).</li>
+          <li>Brief the opening team: daily promotions, any product arrivals, compliance reminders, staffing assignments.</li>
+          <li>Unlock the entrance and open for business.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Accordion: Closing -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">🌙</span> Closing Procedures</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <ul class="step-list">
+          <li>Complete final customer transactions and close the register to new sales.</li>
+          <li>Reconcile POS sales totals against Metrc. Resolve any sync errors before closing.</li>
+          <li>Count all cash in registers. Reconcile against sales totals. Document cash count with two-person verification.</li>
+          <li>Secure cash in the safe following your dual-control cash handling SOP.</li>
+          <li>Move all remaining product from the sales floor back to the secure storage vault.</li>
+          <li>Conduct the end-of-day inventory spot-check and document results.</li>
+          <li>Ensure all Metrc data is current — no pending transfers, all sales recorded.</li>
+          <li>Verify electronic records are backed up as required by DCC rules.</li>
+          <li>Arm security system and perform perimeter check before leaving.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Accordion: Cash Handling -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">💵</span> Cash Handling &amp; Financial Controls</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="alert info">
+          <span class="alert-icon">ℹ️</span>
+          <div>Many cannabis businesses remain cash-heavy due to federal banking restrictions. Proper cash controls protect your business and demonstrate compliance.</div>
+        </div>
+        <div class="two-col mt-16">
+          <div class="info-box">
+            <h4>Cash Control Best Practices</h4>
+            <ul>
+              <li>Always use two-person verification for cash counts</li>
+              <li>Never leave cash unattended or unsecured</li>
+              <li>Maintain a clear chain of custody for all cash movements</li>
+              <li>Separate cash handling duties — the person counting should not be the same person recording</li>
+              <li>Conduct surprise cash audits regularly</li>
+            </ul>
+          </div>
+          <div class="info-box">
+            <h4>Documentation Requirements</h4>
+            <ul>
+              <li>Log every cash count with date, time, amount, and employee signature</li>
+              <li>Document every safe access with employee name and timestamp</li>
+              <li>Retain cash reconciliation records as part of your 3-year record-keeping requirement</li>
+              <li>Report and investigate any cash discrepancies immediately</li>
+              <li>Maintain records available for DCC inspection</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion: Record Keeping -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">🗄️</span> Record Keeping Requirements</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="alert warning">
+          <span class="alert-icon">⚠️</span>
+          <div><strong>Minimum Retention: 3 Years</strong>
+            All dispensary records must be retained for at least three years. Electronic records must be backed up each business day. Records must be available to the DCC immediately upon request.</div>
+        </div>
+        <table class="data-table mt-16">
+          <thead><tr><th>Record Type</th><th>Retention</th><th>Format</th></tr></thead>
+          <tbody>
+            <tr><td>All cannabis received, dispensed, sold, destroyed, or used</td><td>3+ years</td><td>Metrc + physical/electronic</td></tr>
+            <tr><td>Dispensing errors and QA reviews</td><td>3+ years</td><td>Written records, monthly manager sign-off</td></tr>
+            <tr><td>Inventory audit reports</td><td>3+ years</td><td>Documented per GAAP; annual by CPA</td></tr>
+            <tr><td>Employee training records</td><td>3+ years</td><td>Signed attendance logs</td></tr>
+            <tr><td>Cash reconciliation records</td><td>3+ years</td><td>Signed, dated logs</td></tr>
+            <tr><td>Transfer manifests</td><td>3+ years</td><td>Physical or electronic</td></tr>
+            <tr><td>Incident reports</td><td>3+ years</td><td>Written with timestamps</td></tr>
+            <tr><td>ID verification logs (refusals)</td><td>3+ years</td><td>Written log</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Accordion: Incident Reporting -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">🚨</span> Incident Reporting &amp; DCC Notifications</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <p class="text-sm">Certain incidents require timely notification to the DCC. Failing to report can escalate a minor issue into a major compliance violation.</p>
+        <table class="data-table mt-16">
+          <thead><tr><th>Incident Type</th><th>Reporting Deadline</th><th>How to Report</th></tr></thead>
+          <tbody>
+            <tr><td>Unexplained inventory loss / theft</td><td>2 business days</td><td>Phone first, then written notice to DCC</td></tr>
+            <tr><td>Security breach</td><td>As soon as possible</td><td>Phone DCC; also notify local law enforcement</td></tr>
+            <tr><td>Diversion of cannabis</td><td>Immediately</td><td>Phone DCC + law enforcement</td></tr>
+            <tr><td>Employee arrest related to cannabis operations</td><td>As soon as practicable</td><td>Written notice to DCC</td></tr>
+            <tr><td>Facility damage affecting security or operations</td><td>As soon as practicable</td><td>Written notice to DCC</td></tr>
+          </tbody>
+        </table>
+        <div class="alert success mt-16">
+          <span class="alert-icon">✅</span>
+          <div><strong>Incident Response Protocol</strong>
+            Post emergency contacts (DCC, local police, your legal counsel) in a visible location in the manager's office. When in doubt — report it. The DCC views timely self-reporting favorably compared to violations discovered during inspections.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion: Staff Scheduling -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span><span class="acc-icon">📅</span> Staff Scheduling &amp; Coverage</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="two-col">
+          <div class="info-box">
+            <h4>Scheduling Considerations</h4>
+            <ul>
+              <li>Always schedule a licensed Responsible Party (RP) or trained manager on every shift</li>
+              <li>Ensure at least two staff members are on during all open hours for security and dual-control purposes</li>
+              <li>Plan coverage for high-traffic hours (evenings, weekends, payday weeks)</li>
+              <li>Cross-train staff so no single point of failure exists for Metrc operations</li>
+              <li>Keep an on-call list for unexpected absences</li>
+            </ul>
+          </div>
+          <div class="info-box">
+            <h4>Ongoing Training Calendar</h4>
+            <ul>
+              <li><strong>Weekly:</strong> Brief team on any new products, Metrc updates, or compliance reminders</li>
+              <li><strong>Monthly:</strong> QA review of dispensing errors with team</li>
+              <li><strong>Quarterly:</strong> Full compliance refresher training; product knowledge update</li>
+              <li><strong>Annually:</strong> Complete training documentation audit; update all SOPs</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-nav">
+      <button class="nav-btn secondary" onclick="showPage('mod3')">← Module 3</button>
+      <button class="nav-btn" onclick="markComplete('mod4'); showPage('quiz')">Complete &amp; Take Quiz →</button>
+    </div>
+  </section>
+
+  <!-- ── QUIZ ── -->
+  <section class="page" id="page-quiz">
+    <div class="page-header">
+      <h2>Knowledge Check</h2>
+      <p>Test your understanding of Ohio DCC compliance and dispensary operations. Answer all questions, then check your results.</p>
+    </div>
+
+    <div class="quiz-card" id="q1">
+      <h4>1. What is the daily flower purchase limit for adult-use (recreational) customers as of June 2025?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q1" value="a"> 1 ounce</label>
+        <label><input type="radio" name="q1" value="b"> 2.5 ounces</label>
+        <label><input type="radio" name="q1" value="c"> 5 ounces</label>
+        <label><input type="radio" name="q1" value="d"> 10 ounces</label>
+      </div>
+      <button class="quiz-btn" onclick="checkAnswer('q1','b','2.5 ounces (70.75g) is the correct daily flower limit for adult-use customers, updated June 2025.')">Check Answer</button>
+      <div class="quiz-result" id="result-q1"></div>
+    </div>
+
+    <div class="quiz-card" id="q2">
+      <h4>2. High-dose edibles (above 110mg THC per package) are available to which customer type?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q2" value="a"> Adult-use customers 21+</label>
+        <label><input type="radio" name="q2" value="b"> Both adult-use and medical patients</label>
+        <label><input type="radio" name="q2" value="c"> Medical patients only</label>
+        <label><input type="radio" name="q2" value="d"> Anyone over 18</label>
+      </div>
+      <button class="quiz-btn" onclick="checkAnswer('q2','c','Medical patients only. High-dose edibles are restricted to medical cardholders as of the 2025 DCC rule updates.')">Check Answer</button>
+      <div class="quiz-result" id="result-q2"></div>
+    </div>
+
+    <div class="quiz-card" id="q3">
+      <h4>3. Under Ohio DCC rules, how often must a dispensary conduct a formal inventory audit?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q3" value="a"> Daily</label>
+        <label><input type="radio" name="q3" value="b"> At least once weekly</label>
+        <label><input type="radio" name="q3" value="c"> Monthly</label>
+        <label><input type="radio" name="q3" value="d"> Quarterly</label>
+      </div>
+      <button class="quiz-btn" onclick="checkAnswer('q3','b','At least once weekly. The Designated Representative must conduct and document a weekly inventory audit per DCC rules.')">Check Answer</button>
+      <div class="quiz-result" id="result-q3"></div>
+    </div>
+
+    <div class="quiz-card" id="q4">
+      <h4>4. An unexplained inventory loss is discovered during a weekly audit. What is the reporting deadline to the DCC?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q4" value="a"> 24 hours</label>
+        <label><input type="radio" name="q4" value="b"> 2 business days</label>
+        <label><input type="radio" name="q4" value="c"> 7 days</label>
+        <label><input type="radio" name="q4" value="d"> 30 days</label>
+      </div>
+      <button class="quiz-btn" onclick="checkAnswer('q4','b','2 business days. The dispensary must notify the DCC by phone first, then follow up with written notice within 2 business days.')">Check Answer</button>
+      <div class="quiz-result" id="result-q4"></div>
+    </div>
+
+    <div class="quiz-card" id="q5">
+      <h4>5. Which of the following is true about the 10% excise tax on cannabis sales?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q5" value="a"> It applies to all customers equally</label>
+        <label><input type="radio" name="q5" value="b"> Medical cardholders are exempt from the tax</label>
+        <label><input type="radio" name="q5" value="c"> The tax only applies to edibles</label>
+        <label><input type="radio" name="q5" value="d"> It is collected by the dispensary and kept</label>
+      </div>
+      <button class="quiz-btn" onclick="checkAnswer('q5','b','Medical cardholders are exempt from the 10% excise tax. Adult-use customers pay the tax; it is remitted to the state, not kept by the dispensary.')">Check Answer</button>
+      <div class="quiz-result" id="result-q5"></div>
+    </div>
+
+    <div class="quiz-card" id="q6">
+      <h4>6. What is the minimum record retention period required by Ohio DCC rules?</h4>
+      <div class="quiz-options">
+        <label><input type="radio" name="q6" value="a"> 1 year</label>
+        <label><input type="radio" name="q6" value="b"> 2 years</label>
+        <label><input type="radio" name="q6" value="c"> 3 years</label>
+        <label><input type="radio" name="q6" value="d"> 5 years</label>
+      </div>
+      <button class="quiz-btn" onclick="checkAnswer('q6','c','3 years minimum. All dispensary records must be maintained for at least 3 years and be accessible to the DCC upon request.')">Check Answer</button>
+      <div class="quiz-result" id="result-q6"></div>
+    </div>
+
+    <div class="quiz-score-display" id="quizScore"></div>
+
+    <div class="page-nav">
+      <button class="nav-btn secondary" onclick="showPage('mod4')">← Module 4</button>
+      <button class="nav-btn" onclick="showPage('checklist')">Daily Checklist →</button>
+    </div>
+  </section>
+
+  <!-- ── DAILY CHECKLIST ── -->
+  <section class="page" id="page-checklist">
+    <div class="page-header">
+      <h2>Daily Manager Checklist</h2>
+      <p>Use this interactive checklist each day. Check off completed tasks as you go. (Resets when the page reloads — print for a physical copy.)</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div>
+        <div class="info-box mb-16">
+          <h4>☀️ Opening Tasks</h4>
+          <ul class="checklist">
+            <li><input type="checkbox" id="c1"><label for="c1">Disarm security system; check overnight camera logs</label></li>
+            <li><input type="checkbox" id="c2"><label for="c2">Count and verify opening cash drawer</label></li>
+            <li><input type="checkbox" id="c3"><label for="c3">Power on POS; verify Metrc connection is active</label></li>
+            <li><input type="checkbox" id="c4"><label for="c4">Check Metrc for any pending incoming transfers</label></li>
+            <li><input type="checkbox" id="c5"><label for="c5">Opening inventory spot-check (sample of high-value SKUs)</label></li>
+            <li><input type="checkbox" id="c6"><label for="c6">Remove any expired products from sales floor</label></li>
+            <li><input type="checkbox" id="c7"><label for="c7">Verify licenses and required DCC postings are displayed</label></li>
+            <li><input type="checkbox" id="c8"><label for="c8">Brief opening team (products, promotions, reminders)</label></li>
+          </ul>
+        </div>
+
+        <div class="info-box">
+          <h4>📊 Compliance Tasks (As Needed)</h4>
+          <ul class="checklist">
+            <li><input type="checkbox" id="c17"><label for="c17">Accept any incoming Metrc transfers promptly</label></li>
+            <li><input type="checkbox" id="c18"><label for="c18">Review and approve any Metrc package adjustments</label></li>
+            <li><input type="checkbox" id="c19"><label for="c19">Conduct full weekly inventory audit (minimum once/week)</label></li>
+            <li><input type="checkbox" id="c20"><label for="c20">Review dispensing error log (minimum once/month)</label></li>
+            <li><input type="checkbox" id="c21"><label for="c21">Verify all staff training is current and documented</label></li>
+            <li><input type="checkbox" id="c22"><label for="c22">Check license renewal dates and upcoming deadlines</label></li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <div class="info-box mb-16">
+          <h4>🌙 Closing Tasks</h4>
+          <ul class="checklist">
+            <li><input type="checkbox" id="c9"><label for="c9">Final cash register reconciliation (two-person count)</label></li>
+            <li><input type="checkbox" id="c10"><label for="c10">Reconcile POS sales against Metrc; resolve any sync errors</label></li>
+            <li><input type="checkbox" id="c11"><label for="c11">Secure all cash in safe; document safe access log</label></li>
+            <li><input type="checkbox" id="c12"><label for="c12">Move all product from sales floor to secure vault</label></li>
+            <li><input type="checkbox" id="c13"><label for="c13">End-of-day inventory spot-check and documentation</label></li>
+            <li><input type="checkbox" id="c14"><label for="c14">Confirm all Metrc data is current (no pending transfers)</label></li>
+            <li><input type="checkbox" id="c15"><label for="c15">Verify electronic records backed up</label></li>
+            <li><input type="checkbox" id="c16"><label for="c16">Arm security system; complete perimeter check</label></li>
+          </ul>
+        </div>
+
+        <div class="info-box">
+          <h4>🚨 Incident Reporting Reminders</h4>
+          <ul class="checklist">
+            <li><input type="checkbox" id="c23"><label for="c23">Any unexplained inventory loss reported to DCC within 2 business days?</label></li>
+            <li><input type="checkbox" id="c24"><label for="c24">Any security incidents documented and reported?</label></li>
+            <li><input type="checkbox" id="c25"><label for="c25">Any refused sales (underage/impaired) logged?</label></li>
+            <li><input type="checkbox" id="c26"><label for="c26">Any customer complaints documented?</label></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;">
+      <button class="nav-btn secondary" onclick="window.print()" style="margin-right:10px;">🖨️ Print Checklist</button>
+      <button class="nav-btn secondary" onclick="resetChecklist()">↺ Reset Checklist</button>
+    </div>
+
+    <div class="page-nav">
+      <button class="nav-btn secondary" onclick="showPage('quiz')">← Knowledge Check</button>
+      <button class="nav-btn" onclick="showPage('resources')">DCC Resources →</button>
+    </div>
+  </section>
+
+  <!-- ── RESOURCES ── -->
+  <section class="page" id="page-resources">
+    <div class="page-header">
+      <h2>DCC Resources &amp; Quick Reference</h2>
+      <p>Key contacts, official resources, and fast-reference regulatory numbers.</p>
+    </div>
+
+    <div class="two-col">
+      <div class="info-box">
+        <h4>🏛️ Official DCC Links</h4>
+        <ul>
+          <li>DCC Main Site: <strong>com.ohio.gov/cannabis</strong></li>
+          <li>Metrc Ohio Portal: <strong>ohio.metrc.com</strong></li>
+          <li>DCC Licensee Search: available on com.ohio.gov</li>
+          <li>DCC Rules &amp; Guidance Documents: com.ohio.gov/DCC</li>
+          <li>Metrc Ohio Support: <strong>support.metrc.com</strong></li>
+          <li>Ohio Revised Code Ch. 3780 (Cannabis Law): codes.ohio.gov</li>
+        </ul>
+      </div>
+      <div class="info-box">
+        <h4>📞 Emergency Contacts (Post in Manager Office)</h4>
+        <ul>
+          <li>DCC Compliance Division: check com.ohio.gov for current number</li>
+          <li>Metrc Ohio Technical Support: check ohio.metrc.com</li>
+          <li>Local Law Enforcement: 911</li>
+          <li>Your Legal Counsel: _______________</li>
+          <li>Your Designated Representative: _______________</li>
+          <li>Your Ownership / Corporate Contact: _______________</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="page-header">
+      <h2>Quick Reference — Key Numbers</h2>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Item</th><th>Value</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Adult-Use Daily Flower Limit</td><td>2.5 oz / 70.75g</td><td>Updated June 2025</td></tr>
+        <tr><td>Adult-Use Edible Package Max</td><td>110 mg THC</td><td>10 mg max per serving</td></tr>
+        <tr><td>Medical Daily Limit (with card)</td><td>Up to 10 oz</td><td>Some limitations apply; updated March 2026</td></tr>
+        <tr><td>Medical Edible Package Max</td><td>1,500 mg THC</td><td>55 mg max per serving</td></tr>
+        <tr><td>Minimum Age — Adult-Use</td><td>21+</td><td>Government-issued photo ID required</td></tr>
+        <tr><td>Minimum Age — Medical</td><td>18+</td><td>Ohio MMJ card + photo ID required</td></tr>
+        <tr><td>Excise Tax (Adult-Use)</td><td>10%</td><td>Waived for medical cardholders</td></tr>
+        <tr><td>Inventory Audit Frequency</td><td>Minimum 1x/week</td><td>Annual audit by CPA required</td></tr>
+        <tr><td>Record Retention</td><td>3 years minimum</td><td>Daily electronic backup required</td></tr>
+        <tr><td>Theft/Loss Reporting Deadline</td><td>2 business days</td><td>Phone first, then written notice</td></tr>
+        <tr><td>Dispensary Cap (Ohio)</td><td>400 total licenses</td><td>SB 56, effective March 20, 2026</td></tr>
+        <tr><td>License Renewal Fee</td><td>$80,000/year</td><td>Calendar renewal deadlines 60 days out</td></tr>
+        <tr><td>QA Error Review Frequency</td><td>Monthly minimum</td><td>Responsible Party must document</td></tr>
+      </tbody>
+    </table>
+
+    <hr class="divider" />
+
+    <div class="alert success">
+      <span class="alert-icon">🎓</span>
+      <div><strong>Training Complete!</strong>
+        You've worked through all four modules of the Ohio Cannabis Retail Manager Training. Revisit any module at any time using the sidebar. Regulations change — bookmark the DCC's website and check for guidance updates regularly. When in doubt, always contact the DCC directly.</div>
+    </div>
+
+    <div class="page-nav">
+      <button class="nav-btn secondary" onclick="showPage('checklist')">← Daily Checklist</button>
+      <button class="nav-btn" onclick="showPage('home')">Back to Home 🏠</button>
+    </div>
+  </section>
+</div><!-- /main -->
+
+<script>
+  const pages = ['home','mod1','mod2','mod3','mod4','quiz','checklist','resources'];
+  const titles = {
+    home: 'Welcome & Overview',
+    mod1: 'Module 1 — DCC Compliance',
+    mod2: 'Module 2 — Metrc Tracking',
+    mod3: 'Module 3 — Customer Experience',
+    mod4: 'Module 4 — SOPs & Operations',
+    quiz: 'Knowledge Check',
+    checklist: 'Daily Manager Checklist',
+    resources: 'DCC Resources & Quick Reference'
+  };
+  const completed = new Set();
+  let quizScore = 0;
+  let quizAnswered = 0;
+
+  function showPage(id) {
+    pages.forEach(p => {
+      document.getElementById('page-' + p).classList.remove('active');
+    });
+    document.getElementById('page-' + id).classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(el => {
+      if (el.getAttribute('onclick') && el.getAttribute('onclick').includes("'" + id + "'")) {
+        el.classList.add('active');
+      }
+    });
+
+    document.getElementById('topbarTitle').textContent = titles[id] || id;
+    window.scrollTo(0, 0);
+    document.getElementById('main').scrollTo(0, 0);
+  }
+
+  function toggleAccordion(header) {
+    const body = header.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    // Close all in same parent
+    const parent = header.closest('.page') || document;
+    parent.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('open'));
+    parent.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('open'));
+    if (!isOpen) {
+      body.classList.add('open');
+      header.classList.add('open');
+    }
+  }
+
+  function markComplete(mod) {
+    completed.add(mod);
+    updateProgress();
+    // Add check to sidebar nav item
+    document.querySelectorAll('.nav-item').forEach(el => {
+      if (el.getAttribute('onclick') && el.getAttribute('onclick').includes("'" + mod + "'")) {
+        if (!el.querySelector('.check')) {
+          const existing = el.querySelector('.badge');
+          if (existing) existing.remove();
+          const check = document.createElement('span');
+          check.className = 'check';
+          check.textContent = '✓';
+          el.appendChild(check);
+        }
+      }
+    });
+  }
+
+  function updateProgress() {
+    const total = 4; // 4 modules
+    const pct = Math.round((completed.size / total) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '% complete';
+  }
+
+  function checkAnswer(qId, correct, explanation) {
+    const selected = document.querySelector('input[name="' + qId + '"]:checked');
+    const resultEl = document.getElementById('result-' + qId);
+    if (!selected) {
+      resultEl.style.display = 'block';
+      resultEl.className = 'quiz-result incorrect';
+      resultEl.textContent = 'Please select an answer.';
+      return;
+    }
+    const wasAnswered = resultEl.dataset.answered;
+    if (!wasAnswered) {
+      resultEl.dataset.answered = '1';
+      quizAnswered++;
+      if (selected.value === correct) {
+        quizScore++;
+        resultEl.className = 'quiz-result correct';
+        resultEl.textContent = '✅ Correct! ' + explanation;
+      } else {
+        resultEl.className = 'quiz-result incorrect';
+        resultEl.textContent = '❌ Not quite. ' + explanation;
+      }
+    }
+    resultEl.style.display = 'block';
+
+    if (quizAnswered === 6) {
+      const scoreEl = document.getElementById('quizScore');
+      scoreEl.style.display = 'block';
+      const pct = Math.round((quizScore / 6) * 100);
+      if (pct >= 80) {
+        scoreEl.textContent = '🎉 You scored ' + quizScore + ' out of 6 (' + pct + '%). Excellent work — you\'re ready to manage a compliant Ohio cannabis dispensary!';
+        scoreEl.style.background = '#d8f3dc';
+        scoreEl.style.color = '#2d6a4f';
+      } else {
+        scoreEl.textContent = '📚 You scored ' + quizScore + ' out of 6 (' + pct + '%). Review the modules above and retake when ready.';
+        scoreEl.style.background = '#fdecea';
+        scoreEl.style.color = '#c0392b';
+      }
+    }
+  }
+
+  function resetChecklist() {
+    document.querySelectorAll('.checklist input[type=checkbox]').forEach(cb => {
+      cb.checked = false;
+    });
+    document.querySelectorAll('.checklist label').forEach(lbl => {
+      lbl.style.textDecoration = '';
+      lbl.style.color = '';
+    });
+  }
+</script>
+</body>
+</html>
